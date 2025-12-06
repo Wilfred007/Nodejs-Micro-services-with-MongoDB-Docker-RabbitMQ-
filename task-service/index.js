@@ -31,6 +31,8 @@ const Task = mongoose.model('Task', TaskSchema);
 
 let channel, connection;
 
+
+// Establish rabitMQ connection and implement retries then handle errors
 async function connectRabbitMQWithRetry(retries = 5, delay = 3000) {
     while (retries) {
         try {
@@ -71,5 +73,6 @@ app.get('/task', async(req, res) => {
 
 app.listen(PORT, () => {
     console.log(`Task Service is Listening on PORT: ${PORT} `);
+    connectRabbitMQWithRetry();
     
 })

@@ -34,7 +34,11 @@ let channel, connection;
 async function connectRabbitMQWithRetry(retries = 5, delay = 3000) {
     while (retries) {
         try {
-            connection = await amqp.connect('amqp://rabbitmq')
+            connection = await amqp.connect('amqp://rabbitmq');
+            channel = await connection.createChannel();
+            await channel.assertQueue("task_created");
+            console.log("Connected to rabbitMQ");
+            
         } catch (error) {
             
         }

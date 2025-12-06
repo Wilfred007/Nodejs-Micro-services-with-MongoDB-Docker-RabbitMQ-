@@ -58,6 +58,16 @@ app.post('/task', async(req, res) => {
     try {
         const task = new Task({title, description, userId})
         await task.save();
+        
+        //Construct a message that includes the id of the task, the user id and the title
+        const message = { taskId: task_id, userId, title };
+        if (!channel) {
+            return res.status(503).json({error: "RabbitMQ not connected!"})
+        }
+            channel.sendToQueue("task_created", Buffer.from(
+                JSON.stringify(message)
+            ));
+    
         res.status(201).json(task);
     } catch (error) {
         console.log('Error creating task', error);

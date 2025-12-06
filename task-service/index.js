@@ -38,8 +38,12 @@ async function connectRabbitMQWithRetry(retries = 5, delay = 3000) {
             channel = await connection.createChannel();
             await channel.assertQueue("task_created");
             console.log("Connected to rabbitMQ");
-            
+            return;
         } catch (error) {
+            console.error("Rabbit MQ connection error: ", error.message);
+            retries--;
+            console.error("Retrying...: ", retries);
+            await new Promise(res => setTimeout(res, delay));
             
         }
     }

@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const amqp = require('amqplib');
 
 
 const app = express()
@@ -27,6 +28,18 @@ const TaskSchema = new mongoose.Schema({
 })
 
 const Task = mongoose.model('Task', TaskSchema);
+
+let channel, connection;
+
+async function connectRabbitMQWithRetry(retries = 5, delay = 3000) {
+    while (retries) {
+        try {
+            connection = await amqp.connect('amqp://rabbitmq')
+        } catch (error) {
+            
+        }
+    }
+}
 
 
 app.post('/task', async(req, res) => {
